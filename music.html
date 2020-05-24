@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+   <head>
+      <title>Music player</title>
+      <!-- Required meta tags -->
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+      <!-- Bootstrap CSS -->
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+      <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+      <style>
+         body {
+         padding:0px;
+         margin: 0px;
+         height: 100%;
+         }
+         .bg{
+         background-image: url('bg.jpeg');
+         background-size: cover;
+         background-repeat: no-repeat;
+         background-position: center;
+         height: 700px;
+         /* Add the blur effect */
+         filter: blur(10px);
+         -webkit-filter: blur(10px);
+         }
+         .player{
+         position:absolute;
+         top: 15%;
+         left: 30%;
+         width: 500px;
+         height: 500px;
+         border-radius: 10%;
+         background-color: white;
+         box-shadow: 2px 4px 3px blueviolet;
+         z-index: 2;
+         }
+         #pre{
+         width:40px;
+         height: 40px;
+         border-radius: 50%;
+         }
+         #play_push{
+         width:50px;
+         height: 50px;
+         border-radius: 50%;
+         }
+         #next{
+         width:40px;
+         height: 40px;
+         border-radius: 50%;
+         }
+         #seekbar{
+         width:400px;
+         position: absolute;
+         left:12%;
+         }
+      </style>
+   </head>
+   <body>
+      <div class="bg"></div>
+      <i class="fas fa-pause"></i>
+      <div class="player">
+         <div class="row">
+            <div class="col-sm-12">
+               <div class="d-flex justify-content-center">
+                  <img src="bg.jpeg" class="p-2" id="thumb" alt="" width="270" height="350">
+               </div>
+            </div>
+            <div class="col-sm-12">
+               <h6 id="songtitle" class="text-primary p-2 text-center" >Dil na mile</h6>
+            </div>
+            <div class="col-sm-12">
+               <div id="seek" class="p-2">
+                  <input type="range" step="any" name="" id="seekbar" value="0" min="0" max="100">
+               </div>
+            </div>
+            <div class="col-sm-12">
+               <div class="d-flex justify-content-around p-2">
+                  <div class="p-2">
+                     <button class="btn btn-dark" id="pre" onclick="pre()">
+                     <i class="fa fa-backward"></i>
+                     </button>
+                  </div>
+                  <div class="p-2">
+                     <button class="btn btn-danger" id="play_push" onclick="play_push()"><i class="fa fa-play play"></i></button>
+                  </div>
+                  <div class="p-2">
+                     <button class="btn btn-dark" id="next" onclick="next()">
+                     <i class="fa fa-forward"></i>
+                     </button>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <!-- Optional JavaScript -->
+      <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+      <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+      <script>
+         var play_list=['1.mp3','2.mp3','banjara.mp3','4.mp3','Bol_Bugger_Bol.mp3', 'Chingam_Chabake.mp3' ,'Dhat_Teri_Ki.mp3' ,'Dhokha_Dhadi.mp3' ,'Dil_Duffer.mp3', 'Jackpot-Jackpot.mp3'];
+         var thumbnail=['bg.jpeg','14.jpg','14.jpg' ,'13.jpg','11.jpg','12.jpg' ,'bg.jpeg', '14.jpg','11.jpg','11.jpg']
+         
+         song= new Audio();
+         index=0;
+         thumbindex=0;
+         
+         window.onload=playmusic;
+         
+         $('.play').addClass('fa fa-play');
+         function playmusic(){
+                 song.src=play_list[index];
+                 $('#songtitle').text(play_list[index]);
+                 song.play();
+         }
+         function play_push(){
+            if (song.paused){
+                 song.play();
+                 $('.play').removeClass('fa fa-play');
+                 $('.play').addClass('fa fa-pause');    
+            }
+            else{
+                 song.pause();
+                 $('.play').removeClass('fa fa-pause');
+                 $('.play').addClass('fa fa-play');
+            }
+         }
+         
+         song.addEventListener('timeupdate',function(){
+         
+             $('#seekbar').on('input',function(e){
+                 song.currentTime=this.value;
+             });
+             $('#seekbar').attr('max',song.duration);
+             $('#seekbar').val(song.currentTime);
+             if(song.currentTime==song.duration){
+                 next();
+             }
+         });
+         
+         function pre(){
+             index--;
+             thumbindex--;
+             if(index<0){
+                 index=play_list.length-1;
+                 thumbindex=thumbnail.length-1;
+             }
+             
+             playmusic();
+             $('#thumb').attr('src',thumbnail[thumbindex]);
+             $('#songtitle').text(play_list[index]);
+             $('.play').addClass('fa fa-pause');
+         
+         }
+         function next(){
+             index++;
+             thumbindex++;
+             if(index > play_list.length-1){
+                 index = 0;
+                 thumbindex=0;
+             }
+            
+             playmusic();
+             $('#thumb').attr('src',thumbnail[thumbindex]);
+             $('#songtitle').text(play_list[index]);
+             $('.play').addClass('fa fa-pause');
+         }
+      </script>
+   </body>
+</html>
